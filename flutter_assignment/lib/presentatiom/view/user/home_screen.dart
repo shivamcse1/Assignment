@@ -23,7 +23,10 @@ class HomeScreenState extends State<HomeScreen> {
     super.didChangeDependencies();
 
     final homeProvider = Provider.of<HomeScreenProvider>(context,listen: true);
-    dataList = await homeProvider.getUserDetails();
+    
+    Future.delayed(Duration(milliseconds: 1000),() async{
+      dataList = await homeProvider.getUserDetails();
+    }) ;
    
   }
 
