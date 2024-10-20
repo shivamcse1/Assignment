@@ -11,11 +11,13 @@ class HomeScreenProvider extends ChangeNotifier{
 
 // bool _isLoading = true;
 // bool get isLoading =>_isLoading ;
+List<dynamic> _userData = [];
+List<dynamic> get userData =>_userData ;
 
+List<dynamic> _filterList = [];
+List<dynamic> get filterList =>_filterList ;
 
-Future<List<dynamic>> getUserDetails () async{
-
-  List<dynamic> userData = [];
+Future<void> getUserDetails () async{
 
    try{
      Uri uriUrl = Uri.parse(ApiUrlConstant.baseUrl + ApiUrlConstant.userDetails);
@@ -23,24 +25,32 @@ Future<List<dynamic>> getUserDetails () async{
 
      if(response.statusCode == 200){
       var data = jsonDecode(response.body);
-      userData = data["data"];
+      _userData = data["data"];
+      _filterList = _userData;
       print(userData);
       notifyListeners();
-      return userData;
-     }
-     else{
-       notifyListeners();
-      return userData;
+  
      }
 
    }
    catch (e){
-    notifyListeners();
     print("Exception Occurs :$e");
-     return userData;
+
    }
-  
-   
+   notifyListeners();
 
   }
+
+
+void filterData(String query){
+
+   _filterList = userData.where(
+    (element) {
+
+      String name = element['first_name']+element['last_name']?.toLowerCase() ?? '';
+      return name.contains(query.toLowerCase());
+    }
+    ).toList();
+    notifyListeners();
+}
 }
